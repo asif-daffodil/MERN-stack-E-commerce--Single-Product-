@@ -1,8 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Modhu = () => {
     const [deliveryArea, setDeliveryArea] = useState("");
-    const [totalAmount, setTotalAmount] = useState(0);
+    const [deliveryCharge, setDeliveryCharge] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(1750);
+    const [quantity, setQuantity] = useState(1);
+
+    const handleIncrement = () => {
+        const newQuantity = quantity + 1;
+        setQuantity(newQuantity);
+        setTotalAmount((1750 * newQuantity) + deliveryCharge);
+    }
+
+    const handleDecrement = () => {
+        if (quantity > 1) {
+            const newQuantity = quantity - 1;
+            setQuantity(newQuantity);
+            setTotalAmount((1750 * newQuantity) + deliveryCharge);
+        }
+    }
+
+    useEffect(() => {
+        setTotalAmount((1750 * quantity) + deliveryCharge);
+    }, [deliveryCharge, quantity]);
 
     return (
         <div className="container mx-auto px-2 md:px-4 py-3 md:py-6 text-center bg-white">
@@ -33,32 +53,59 @@ const Modhu = () => {
                         <div className="w-full flex flex-col justify-center items-start gap-3 mb-3">
                             <label htmlFor="" className="font-bold">ডেলিভারি এলাকা</label>
                             <label htmlFor="insideDhaka" className={`border rounded w-full flex items-center p-2 ${deliveryArea === "insideDhaka" ? "border-black" : "border-gray-300"}`}>
-                                <input type="radio" id="insideDhaka" name="deliveryArea" value="insideDhaka" onChange={(e) => setDeliveryArea(e.target.value)} className="size-4 mr-2" />
+                                <input type="radio" id="insideDhaka" name="deliveryArea" value="insideDhaka" onChange={(e) => {setDeliveryArea(e.target.value); setDeliveryCharge(50)}} className="size-4 mr-2" />
                                 ঢাকা সিটির ভেতরে
                                 <div className="ml-auto font-bold">৳50</div>
                             </label>
                             <label htmlFor="outsideDhaka" className={`border rounded w-full flex items-center p-2 ${deliveryArea === "outsideDhaka" ? "border-black" : "border-gray-300"}`}>
-                                <input type="radio" id="outsideDhaka" name="deliveryArea" className="size-4 mr-2" value="outsideDhaka" onChange={(e) => setDeliveryArea(e.target.value)} />
+                                <input type="radio" id="outsideDhaka" name="deliveryArea" className="size-4 mr-2" value="outsideDhaka" onChange={(e) => {setDeliveryArea(e.target.value); setDeliveryCharge(80)}} />
                                 ঢাকা সিটির বাহিরে
                                 <div className="ml-auto font-bold">৳80</div>
                             </label>
                             <label htmlFor="insideBd" className={`border rounded w-full flex items-center p-2 ${deliveryArea === "insideBd" ? "border-black" : "border-gray-300"}`}>
-                                <input type="radio" id="insideBd" name="deliveryArea" value="insideBd" onChange={(e) => setDeliveryArea(e.target.value)} className="size-4 mr-2" />
+                                <input type="radio" id="insideBd" name="deliveryArea" value="insideBd" onChange={(e) => {setDeliveryArea(e.target.value); setDeliveryCharge(100)}} className="size-4 mr-2" />
                                 ঢাকা জেলার বাহিরে
                                 <div className="ml-auto font-bold">৳100</div>
                             </label>
                         </div>
-                        <button type="submit" className="bg-orange-600 text-white font-bold w-full rounded py-3 cursor-pointer animate-[shaking_2s_ease-in-out_infinite_0s] ">অর্ডার কনফার্ম করুন {totalAmount} TK</button>
+                        <button type="submit" className="bg-orange-600 text-white font-bold w-full rounded py-3 cursor-pointer animate-[shaking_2s_ease-in-out_infinite_0s] ">অর্ডার কনফার্ম করুন {totalAmount.toLocaleString()} TK</button>
                         <div className="text-xs text-center text-gray-500 py-4">
                             আমাদের একজন কাস্টমার প্রতিনিধি আপনাকে কল করে আবার কনফার্ম হবে
                         </div>
                     </div>
                     <div>
                         <h3 className="text-xl font-bold mb-6">পন্য বাছাই করুন</h3>
-                        <label htmlFor="" className="border p-4 rounded flex gap-3 bg-gray-100">
+                        <div htmlFor="" className="border p-4 rounded flex gap-3 bg-gray-50 mb-3">
                             <input type="radio" checked className="size-5 border border-gray-300" />
                             <img src="https://pub-b80211003304448e8a7f0edc480f0608.r2.dev/WW_KMG3qle6k.webp" alt="" className="w-24" />
-                        </label>
+                            <div>
+                                <h4 className="font-bold text-lg">২ কেজি - প্রিমিয়াম কম্বো</h4>
+                                <h4 className="font-bold text-lg">৳1,750 <span className="text-sm line-through font-light">৳2,100</span><span className="text-sm font-medium bg-red-500 text-white rounded-full px-2 py-1 ml-1">17% OFF</span></h4>
+                                <div className="flex items-center gap-3 mt-3">
+                                    Quantity: 
+                                    <div className="*:py-2 *:px-3 border-2 border-gray-300 rounded-md">
+                                        <button className="cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-l-md" onClick={() => handleDecrement()} type="button">-</button>
+                                        <span className="bg-white">{quantity}</span>
+                                        <button className="cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-r-md" onClick={() => handleIncrement()} type="button">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded border border-gray-300 bg-white flex flex-col gap-3">
+                            <div className="flex justify-between">
+                                <span>মোট</span>
+                                <span>৳{(totalAmount - deliveryCharge).toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>ডেলিভারি চার্জ</span>
+                                <span>{deliveryCharge === 0 ? "Select Delivery Area" : `৳${deliveryCharge.toLocaleString()}`}</span>
+                            </div>
+                            <hr className="bg-transparent border-t border-gray-200" />
+                            <div className="flex justify-between font-bold text-lg">
+                                <span>Total</span>
+                                <span>{deliveryCharge === 0 ? "Select Delivery Area" : `৳${(totalAmount).toLocaleString()}`}</span>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>

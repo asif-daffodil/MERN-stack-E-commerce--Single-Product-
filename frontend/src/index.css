@@ -2,27 +2,27 @@
 
 @keyframes shaking {
   0% {
-    transform: skewY(-5deg);
+    transform: skewY(-2deg);
   }
 
   5% {
-    transform: skewY(5deg);
+    transform: skewY(2deg);
   }
 
   10% {
-    transform: skewY(-5deg);
+    transform: skewY(-2deg);
   }
 
   15% {
-    transform: skewY(5deg);
+    transform: skewY(2deg);
   }
 
   20% {
-    transform: skewY(-5deg);
+    transform: skewY(-2deg);
   }
 
   25% {
-    transform: skewY(5deg);
+    transform: skewY(2deg);
   }
 
   30% {
