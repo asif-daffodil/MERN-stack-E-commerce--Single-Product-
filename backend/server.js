@@ -10,6 +10,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded());
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const User = require('./model/user');
 
 const mongoConnect = async () => {
     try {
@@ -18,6 +20,20 @@ const mongoConnect = async () => {
             throw new Error('MongoDB connection failed');
         }
         console.log('MongoDB connected successfully');
+
+        // Ensure default admin user exists (dev-friendly bootstrap)
+        const adminUsername = (process.env.ADMIN_USERNAME || 'admin').trim();
+        const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+        const existingAdmin = await User.findOne({ username: adminUsername }).lean();
+        if (!existingAdmin) {
+            const passwordHash = await bcrypt.hash(adminPassword, 10);
+            await User.create({
+                username: adminUsername,
+                passwordHash,
+                role: 'admin',
+            });
+            console.log(`Admin user created: ${adminUsername}`);
+        }
     }catch (error) {
         console.error('MongoDB connection error:', error);  
         process.exit(1);

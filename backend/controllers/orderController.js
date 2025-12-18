@@ -25,6 +25,13 @@ const order = (req, res) => {
         .catch(error => res.status(500).json({ error: 'Failed to create order', details: error.message }));
 };
 
+const getAllOrders = (req, res) => {
+    Order.find()
+        .then(orders => res.status(200).json(orders))
+        .catch(error => res.status(500).json({ error: 'Failed to retrieve orders', details: error.message }));
+};
+
 module.exports = {
-    order
+    order,
+    getAllOrders
 };
